@@ -53,6 +53,7 @@ ltex-ls = { command = "ltex-ls" }
 markdoc-ls = { command = "markdoc-ls", args = ["--stdio"] }
 markdown-oxide = { command = "markdown-oxide" }
 marksman = { command = "marksman", args = ["server"] }
+mesonlsp = { command = "mesonlsp", args = ["--lsp"] }
 metals = { command = "metals", config = { "isHttpEnabled" = true, metals = { inlayHints = { typeParameters = {enable = true} , hintsInPatternMatch = {enable = true} }  } } }
 mint = { command = "mint", args = ["ls"] }
 mojo-lsp = { command = "mojo-lsp-server" }
@@ -2141,6 +2142,7 @@ name = "meson"
 scope = "source.meson"
 injection-regex = "meson"
 file-types = [{ glob = "meson.build" }, { glob = "meson.options" }, { glob = "meson_options.txt" }]
+language-servers = [ "mesonlsp" ]
 comment-token = "#"
 indent = { tab-width = 2, unit = "  " }
 
