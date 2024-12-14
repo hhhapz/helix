@@ -15,8 +15,8 @@ mod steel_implementations {
         document::Mode,
         editor::{
             Action, AutoSave, BufferLine, CursorShapeConfig, FilePickerConfig, GutterConfig,
-            IndentGuidesConfig, LineEndingConfig, LineNumber, LspConfig, SearchConfig,
-            SmartTabConfig, StatusLineConfig, TerminalConfig, WhitespaceConfig,
+            IndentGuidesConfig, LineEndingConfig, LineNumber, LspConfig, ScrolloffConfig,
+            SearchConfig, SmartTabConfig, StatusLineConfig, TerminalConfig, WhitespaceConfig,
         },
         graphics::{Color, Rect, Style, UnderlineStyle},
         input::{Event, KeyEvent},
@@ -103,6 +103,7 @@ mod steel_implementations {
 
     impl Custom for Action {}
 
+    impl Custom for ScrolloffConfig {}
     impl Custom for FilePickerConfig {}
     impl Custom for StatusLineConfig {}
     impl Custom for SearchConfig {}

@@ -24,8 +24,8 @@ use helix_view::{
     editor::{
         Action, AutoSave, BufferLine, ClippingConfiguration, ConfigEvent, CursorShapeConfig,
         FilePickerConfig, GutterConfig, IndentGuidesConfig, LineEndingConfig, LineNumber,
-        SearchConfig, SmartTabConfig, StatusLineElement, TerminalConfig, WhitespaceConfig,
-        WhitespaceRender, WhitespaceRenderValue,
+        ScrolloffConfig, SearchConfig, SmartTabConfig, StatusLineElement, TerminalConfig,
+        WhitespaceConfig, WhitespaceRender, WhitespaceRenderValue,
     },
     events::{DocumentDidOpen, DocumentFocusLost, DocumentSaved, SelectionDidChange},
     extension::document_id_to_usize,
@@ -1317,8 +1317,9 @@ fn load_configuration_api(engine: &mut Engine, generate_sources: bool) {
         .register_fn("ig-character", ig_character)
         .register_fn("ig-skip-levels", ig_skip_levels);
 
+    module.register_fn("scrolloff", HelixConfiguration::scrolloff);
+
     module
-        .register_fn("scrolloff", HelixConfiguration::scrolloff)
         .register_fn("scroll_lines", HelixConfiguration::scroll_lines)
         .register_fn("mouse", HelixConfiguration::mouse)
         .register_fn("shell", HelixConfiguration::shell)
@@ -3934,7 +3935,7 @@ impl HelixConfiguration {
         EmbeddedKeyMap(self.configuration.load_full().keys.clone())
     }
 
-    fn scrolloff(&self, lines: usize) {
+    fn scrolloff(&self, lines: ScrolloffConfig) {
         let mut app_config = self.load_config();
         app_config.editor.scrolloff = lines;
         self.store_config(app_config);
