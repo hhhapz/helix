@@ -261,6 +261,7 @@ impl View {
                     .horizontal
                     .min(viewport.width.saturating_sub(1) as usize / 2),
                 scrolloff.horizontal.min(viewport.width as usize / 2),
+                5, 5,
             )
         };
 

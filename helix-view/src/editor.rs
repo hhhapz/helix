@@ -980,6 +980,13 @@ pub enum PopupBorderConfig {
 impl Default for Config {
     fn default() -> Self {
         Self {
+<<<<<<< HEAD
+||||||| parent of e81a767 (feat: add option for horizontal/vertical scrolloff)
+            scrolloff: 5,
+=======
+            // scrolloff: 5,
+            // scrolloff_horizontal: 5,
+>>>>>>> e81a767 (feat: add option for horizontal/vertical scrolloff)
             scrolloff: ScrolloffConfig::default(),
             scroll_lines: 3,
             mouse: true,
