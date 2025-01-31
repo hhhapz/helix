@@ -266,7 +266,6 @@ impl Default for ScrolloffConfig {
 #[serde(rename_all = "kebab-case", default, deny_unknown_fields)]
 pub struct Config {
     /// Padding to keep between the edge of the screen and the cursor when scrolling. Defaults to 5.
-    // pub scrolloff_horizontal: usize,
     pub scrolloff: ScrolloffConfig,
     /// Number of lines to scroll at once. Defaults to 3
     pub scroll_lines: isize,
@@ -990,8 +989,6 @@ pub enum PopupBorderConfig {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            // scrolloff: 5,
-            // scrolloff_horizontal: 5,
             scrolloff: ScrolloffConfig::default(),
             scroll_lines: 3,
             mouse: true,
