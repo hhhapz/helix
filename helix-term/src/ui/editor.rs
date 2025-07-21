@@ -31,7 +31,13 @@ use helix_view::{
     keyboard::{KeyCode, KeyModifiers},
     Document, Editor, Theme, View,
 };
-use std::{mem::take, num::NonZeroUsize, ops, path::PathBuf, rc::Rc};
+use std::{
+    mem::take,
+    num::NonZeroUsize,
+    ops,
+    path::{Component as PathComponent, PathBuf},
+    rc::Rc,
+};
 
 use tui::{buffer::Buffer as Surface, text::Span};
 
@@ -593,7 +599,6 @@ impl EditorView {
 
     /// Render bufferline at the top
     pub fn render_bufferline(editor: &Editor, viewport: Rect, surface: &mut Surface) {
-        let scratch = PathBuf::from(SCRATCH_BUFFER_NAME); // default filename to use for scratch buffer
         surface.clear_with(
             viewport,
             editor
@@ -615,14 +620,17 @@ impl EditorView {
         let mut x = viewport.x;
         let current_doc = view!(editor).doc;
 
+        let paths = editor
+            .documents()
+            .filter_map(|d| d.path())
+            .collect::<Vec<_>>();
+
         for doc in editor.documents() {
-            let fname = doc
-                .path()
-                .unwrap_or(&scratch)
-                .file_name()
-                .unwrap_or_default()
-                .to_str()
-                .unwrap_or_default();
+            let fname = if let Some(p) = doc.path() {
+                unambiguous_path(p, &paths)
+            } else {
+                &SCRATCH_BUFFER_NAME
+            };
 
             let style = if current_doc == doc.id() {
                 bufferline_active
@@ -1647,4 +1655,49 @@ fn canonicalize_key(key: &mut KeyEvent) {
     {
         key.modifiers.remove(KeyModifiers::SHIFT)
     }
+}
+
+fn unambiguous_path<'a>(path: &'a PathBuf, paths: &Vec<&PathBuf>) -> &'a str {
+    let full = match path.to_str() {
+        Some(s) => s,
+        None => return "",
+    };
+    let components = path.components().collect::<Vec<_>>();
+    if components.is_empty() {
+        return full;
+    }
+    let needed = unique_path_components(paths, &components, 1);
+    let suffix = build_subpath(&components, needed)
+        .to_str()
+        .unwrap_or_default()
+        .len();
+    &full[full.len() - suffix..]
+}
+
+fn unique_path_components(
+    paths: &Vec<&PathBuf>,
+    target: &Vec<PathComponent<'_>>,
+    components: usize,
+) -> usize {
+    if components > target.len() {
+        return target.len();
+    }
+
+    let subpath = build_subpath(target, components);
+    let matches = paths
+        .iter()
+        .filter(|p| p.ends_with(subpath.to_str().unwrap_or_default()))
+        .count();
+    if matches <= 1 {
+        components
+    } else {
+        unique_path_components(paths, target, components + 1)
+    }
+}
+fn build_subpath(components: &Vec<PathComponent<'_>>, n: usize) -> PathBuf {
+    let mut subpath = PathBuf::new();
+    for c in components[components.len() - n..].iter() {
+        subpath.push(c);
+    }
+    subpath
 }
