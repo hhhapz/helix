@@ -531,6 +531,10 @@ impl Theme {
         self.rainbow_length
     }
 
+    pub fn get_rainbow(&self, index: usize) -> Style {
+        self.highlights[index % self.rainbow_length]
+    }
+
     pub fn from_toml(value: Value) -> (Self, Vec<String>) {
         if let Value::Table(table) = value {
             Theme::from_keys(table)
