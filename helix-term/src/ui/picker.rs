@@ -1074,6 +1074,16 @@ impl<I: 'static + Send + Sync, D: 'static + Send + Sync> Component for Picker<I,
                     (self.callback_fn)(ctx, option, Action::Replace);
                 }
             }
+            ctrl!(Enter) => {
+                let matches = self.matcher.snapshot();
+                for i in 0..matches.matched_item_count() {
+                    if let Some(item) = matches.get_matched_item(i) {
+                        (self.callback_fn)(ctx, item.data, Action::Replace)
+                    }
+                }
+
+                return close_fn(self);
+            }
             key!(Enter) => {
                 // If the prompt has a history completion and is empty, use enter to accept
                 // that completion
